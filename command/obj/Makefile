@@ -2,7 +2,7 @@ CC = gcc
 LD = gcc
 
 INCDIR = ../include
-SRCDIR1 = ../
+SRCDIR1 = ../util
 SRCDIR2 = ../
 
 VPATH = $(SRCDIR1) $(SRCDIR2) ..
