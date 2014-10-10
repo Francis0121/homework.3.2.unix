@@ -1,3 +1,1 @@
 cat main.c
-cat -b main.c
-cat -n main.c

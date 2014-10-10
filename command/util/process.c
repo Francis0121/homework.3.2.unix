@@ -14,6 +14,7 @@
 */
 void exec_my_program(int *argc, char **argv) {
     pid_t pid;
+    // TODO : relative path  use "execvp" system call (after)
     char *absolute_path = "/home/francis/git/unix/command/bin/";
     char *path;
 

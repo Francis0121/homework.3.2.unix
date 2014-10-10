@@ -2,8 +2,8 @@ CC = gcc
 LD = gcc
 
 INCDIR = ../../include
-SRCDIR1 = ../util
-SRCDIR2 = ../
+SRCDIR1 = ../../util
+SRCDIR2 = ../../argument
 
 VPATH = $(SRCDIR1) $(SRCDIR2) ..
 
