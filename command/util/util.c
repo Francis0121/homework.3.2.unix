@@ -1,11 +1,4 @@
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-// ~ process
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
 /*
 *   Split Command Line Sentence
 *   @param *str
@@ -33,23 +26,4 @@ void split_command_line(char *str, int *argc, char **argv){
         (*argc)++;
     }
 
-}
-
-void exec_my_program(int *argc, char **argv) {
-    pid_t pid;
-    if ((pid = fork()) < 0) {
-        printf("Fork error\n");
-        exit(-1);
-    }
-
-    if (pid == 0) {
-        execv("/home/francis/git/unix/command/cat/cat", argv);
-        printf("Exec error\n");
-        exit(-1);
-    }
-
-    if (waitpid(pid, NULL, 0) != pid) {
-        printf("Waitpid error\n");
-        exit(-1);
-    }
 }

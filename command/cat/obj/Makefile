@@ -20,7 +20,7 @@ all: $(TARGET)
 
 $(TARGET) : $(OBJS)
 	$(LD) $^ -o$(TARGET) $(LIBS)
-	mv $(TARGET) ../
+	mv $(TARGET) ../../bin/
 
 
 %o:%c
