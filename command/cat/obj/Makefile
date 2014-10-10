@@ -1,7 +1,7 @@
 CC = gcc
 LD = gcc
 
-INCDIR = ../include
+INCDIR = ../../include
 SRCDIR1 = ../
 SRCDIR2 = ../
 
@@ -9,7 +9,7 @@ VPATH = $(SRCDIR1) $(SRCDIR2) ..
 
 CFLAGS = -O2 -I$(INCDIR)
 
-TARGET = command
+TARGET = cat
 
 SRCS = $(foreach dir, .. $(SRCDIR1) $(SRCDIR2), $(wildcard $(dir)/*.c))
 SRCS := $(notdir $(SRCS))
