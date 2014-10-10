@@ -43,7 +43,7 @@ void exec_my_program(int *argc, char **argv) {
     }
 
     if (pid == 0) {
-        execl("/home/francis/git/unix/command/cat/cat", *(argv+0), *(argv+1), (char *) 0);
+        execv("/home/francis/git/unix/command/cat/cat", argv);
         printf("Exec error\n");
         exit(-1);
     }
