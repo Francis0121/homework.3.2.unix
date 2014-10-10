@@ -16,6 +16,8 @@ int main(void) {
     char *str, **argv;
     int i;
     int argc=0;
+    // ~ process
+    pid_t pid;
 
     in = fopen("command.txt", "r");
     str = malloc(sizeof(char) * MAX_CHAR_SIZE);
@@ -31,6 +33,7 @@ int main(void) {
         }
         printf("%d\n", argc);
         // ~ fork after return arguments
+        exec_my_program(&argc, argv);
     }
 
     free(str), fclose(in), exit(0);
