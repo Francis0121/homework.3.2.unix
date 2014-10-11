@@ -1,1 +1,1 @@
-cat -n main.c command.txt
+cat -n input.txt

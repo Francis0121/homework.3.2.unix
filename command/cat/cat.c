@@ -6,11 +6,12 @@
 
 #define TRUE 1
 #define FALSE 0
-#define BUFSIZE 512
+#define BUF_SIZE 512
 #define MAX_ARGUMENT_SIZE 10
 
 int newLineFlag = FALSE;
 int blankFlag = FALSE;
+int lineNumber = 0;
 
 /**
 * @param fd
@@ -24,10 +25,10 @@ int cat(int fd){
 	ssize_t nTotalWritten;
 	ssize_t nWritten;
 
-	char buffer[BUFSIZE];
-	char *newLine = "\n";
+	char *buffer;
 
-	while ((nRead = read(fd, buffer, BUFSIZE)) > 0) {
+	buffer = (char *) malloc(sizeof(char) * BUF_SIZE);
+	while ((nRead = read(fd, buffer, BUF_SIZE)) > 0) {
 		nTotalWritten = 0;
 		while (nTotalWritten < nRead) {
 			nWritten = write(STDOUT_FILENO, buffer + nTotalWritten, nRead - nTotalWritten);
@@ -38,6 +39,20 @@ int cat(int fd){
 	}
 
 	return nRead == 0 ? 0 : -1;
+}
+
+/**
+* @param ch
+* 	type *char : option string character - 'b' 'n'
+*/
+void set_option_flag(char *ch){
+	switch(*ch){
+		case 'b':
+			blankFlag = TRUE;
+		case 'n':
+			newLineFlag = TRUE;
+			break;
+	}
 }
 
 /**
@@ -69,16 +84,6 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 
 }
 
-int set_option_flag(char *ch){
-	switch(*ch){
-		case 'b':
-			blankFlag = TRUE;
-		case 'n':
-			newLineFlag = TRUE;
-			break;
-	}
-}
-
 /**
 * @param argc
 *	type int : command line argument size at lest 2
@@ -101,6 +106,7 @@ int main(int argc, char **argv) {
 	pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
 	control_argument(&argc, argv, &pathSize, pathList);
 
+	lineNumber = 0;
 	for(i=0; i<pathSize; i++){
 		name = *(pathList+i);
 		// ~ newLine removal

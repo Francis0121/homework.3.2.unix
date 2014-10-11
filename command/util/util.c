@@ -1,4 +1,6 @@
 #include <string.h>
+#include <stdio.h>
+
 /*
 *   Split Command Line Sentence
 *   @param *str
