@@ -18,6 +18,12 @@ int main(void) {
 
     // ~ one line read
     while(fgets(str, MAX_CHAR_SIZE, in) != NULL){
+		// ~ Print command string
+		fputs("-------------------------------------\n", stdout);
+		fputs("Command : ", stdout);
+		fputs(str, stdout);
+		fputs("-------------------------------------\n", stdout);
+
         argv = (char **) malloc(sizeof(char*)* MAX_ARGUMENT_SIZE);
         split_command_line(str, &argc, argv);
         // ~ fork and wait - doing program exec
