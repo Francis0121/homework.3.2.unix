@@ -6,7 +6,9 @@
 
 #define TRUE 1
 #define FALSE 0
+
 #define BUF_SIZE 512
+#define LINE_BUF_SIZE 100
 #define MAX_ARGUMENT_SIZE 10
 
 int flagLineNumber = FALSE;
@@ -31,7 +33,7 @@ int cat(int fd){
 	int flagCombine = FALSE;
 
 	buffer = (char *) malloc(sizeof(char) * BUF_SIZE);
-	lineBuffer = (char *) malloc(sizeof(char) * BUF_SIZE);
+	lineBuffer = (char *) malloc(sizeof(char) * LINE_BUF_SIZE);
 	while ((nRead = read(fd, buffer, BUF_SIZE)) > 0) {
 		if(!flagExceptBlank && !flagLineNumber){
 			nTotalWritten = 0;
@@ -136,13 +138,13 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 */
 int main(int argc, char **argv) {
 	int infile, i;
-	char *name;
+	char *name, *error;
 
 	int pathSize = 0;
 	char **pathList;
 
 	if (argc < 2) {
-		printf("cat [OPTION] ... [FILE] ... \n");
+		perror("cat [OPTION] ... [FILE] ... \n");
 		exit(-1);
 	}
 
@@ -160,14 +162,19 @@ int main(int argc, char **argv) {
 
 		// ~ file open
 		if ((infile = open(name, O_RDONLY)) < 0) {
-			perror("File open Error\n");
+			error = (char *) malloc(sizeof(char) * (strlen(name) + 6));
+			sprintf(error, "cat: %s", name);
+			perror(error);
+			free(error);
 			exit(-1);
 		}
+
 		// ~ exec cat function
 		if(cat(infile) < 0) {
 			perror("Execute cat error\n");
 			exit(-1);
 		}
+		close(infile);
 	}
 
 	for(i=0; i<pathSize; i++)

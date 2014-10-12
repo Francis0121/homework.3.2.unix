@@ -1,5 +1,7 @@
-cat input.txt
+cat command.txt input.txt
 cat -n input.txt
 cat -n main.c
 cat -b input.txt
 cat -bn main.c
+cat input.txt -n command.txt
+cat error.txt
