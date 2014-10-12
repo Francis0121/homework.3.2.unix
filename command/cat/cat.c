@@ -80,6 +80,8 @@ int cat(int fd){
 			}
 		}
 	}
+	free(buffer);
+	free(lineBuffer);
 	// nread 가 0이 아니라면 buffer가 다 비워지지 않거나 read시 에러가 발생한 것이다.
 	return nRead == 0 ? 0 : -1;
 }
@@ -147,8 +149,8 @@ int main(int argc, char **argv) {
 	// ~ control to command line argument
 	pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
 	control_argument(&argc, argv, &pathSize, pathList);
-
 	lineNumber = 0;
+
 	for(i=0; i<pathSize; i++){
 		name = *(pathList+i);
 		// ~ newLine removal
@@ -167,6 +169,10 @@ int main(int argc, char **argv) {
 			exit(-1);
 		}
 	}
+
+	for(i=0; i<pathSize; i++)
+		free(*(pathList+i));
+	free(pathList);
 
     return 0;
 }

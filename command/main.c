@@ -28,6 +28,10 @@ int main(void) {
         split_command_line(str, &argc, argv);
         // ~ fork and wait - doing program exec
         exec_my_program(&argc, argv);
+
+		for(i=0; i<argc; i++)
+			free(*(argv+i));
+		free(argv);
     }
 
     free(str), fclose(in), exit(0);
