@@ -1,1 +1,5 @@
+cat input.txt
 cat -n input.txt
+cat -n main.c
+cat -b input.txt
+cat -bn main.c

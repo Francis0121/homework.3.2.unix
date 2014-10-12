@@ -9,8 +9,8 @@
 #define BUF_SIZE 512
 #define MAX_ARGUMENT_SIZE 10
 
-int newLineFlag = FALSE;
-int blankFlag = FALSE;
+int flagLineNumber = FALSE;
+int flagExceptBlank = FALSE;
 int lineNumber = 0;
 
 /**
@@ -25,19 +25,62 @@ int cat(int fd){
 	ssize_t nTotalWritten;
 	ssize_t nWritten;
 
-	char *buffer;
+	int bPoint = 0, beforePoint = 0; // buffer point
+	char *buffer, *lineBuffer;
+	int flagContinue = FALSE;
+	int flagCombine = FALSE;
 
 	buffer = (char *) malloc(sizeof(char) * BUF_SIZE);
+	lineBuffer = (char *) malloc(sizeof(char) * BUF_SIZE);
 	while ((nRead = read(fd, buffer, BUF_SIZE)) > 0) {
-		nTotalWritten = 0;
-		while (nTotalWritten < nRead) {
-			nWritten = write(STDOUT_FILENO, buffer + nTotalWritten, nRead - nTotalWritten);
-			if (nWritten < 1)
-				return -1;
-			nTotalWritten += nWritten;
+		if(!flagExceptBlank && !flagLineNumber){
+			nTotalWritten = 0;
+			while (nTotalWritten < nRead) {
+				nWritten = write(STDOUT_FILENO, buffer + nTotalWritten, nRead - nTotalWritten);
+				if (nWritten < 1)
+					return -1;
+				nTotalWritten += nWritten;
+			}
+		}else if(flagLineNumber){ // Line number insert
+			bPoint = 0;
+			nTotalWritten = 0;
+			// ~ Start
+			if(flagContinue == FALSE) {
+				flagContinue = TRUE;
+				sprintf(lineBuffer, "%6.d  ", ++lineNumber);
+				nWritten = write(STDOUT_FILENO, lineBuffer, strlen(lineBuffer));
+				if (nWritten < 1) return -1;
+			}
+			// ~ One character write
+			while(nTotalWritten < nRead) {
+				nWritten = write(STDOUT_FILENO, buffer+bPoint, 1);
+				if (nWritten < 1) return -1;
+				nTotalWritten += nWritten;
+
+				// ~ Judge line number insert and blank position or new line position
+				if( *(buffer+ bPoint) == '\n' && nRead != (bPoint+1) ){
+					flagCombine = TRUE;
+					if(flagExceptBlank && !( (bPoint+1) < nRead && *(buffer+bPoint+1) != '\n') ){
+						flagCombine = FALSE;
+					}
+				}
+
+				if(flagCombine){
+					flagCombine = FALSE;
+					sprintf(lineBuffer, "%6.d  ", ++lineNumber);
+					nWritten = write(STDOUT_FILENO, lineBuffer, strlen(lineBuffer));
+					if (nWritten < 1) return -1;
+				}
+
+				bPoint++;
+			}
+			// ~ Full Buffer and last character is new line
+			if(nRead == BUF_SIZE && buffer[BUF_SIZE] == '\n'){
+				flagContinue = FALSE;
+			}
 		}
 	}
-
+	// nread 가 0이 아니라면 buffer가 다 비워지지 않거나 read시 에러가 발생한 것이다.
 	return nRead == 0 ? 0 : -1;
 }
 
@@ -48,9 +91,9 @@ int cat(int fd){
 void set_option_flag(char *ch){
 	switch(*ch){
 		case 'b':
-			blankFlag = TRUE;
+			flagExceptBlank = TRUE;
 		case 'n':
-			newLineFlag = TRUE;
+			flagLineNumber = TRUE;
 			break;
 	}
 }
@@ -73,7 +116,6 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 		strSize = strlen(*(argv+i));
 		if(*(*(argv+i)+0) == '-'){
 			for(j=1; j<strSize; j++){
-				//printf("Option : %c\n", *(*(argv+i)+j));
 				set_option_flag(*(argv+i)+j);
 			}
 		}else{
