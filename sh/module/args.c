@@ -98,6 +98,15 @@ int gettok(char **outptr){
 		case ';' :
 			type = SEMICOLON;
 			break;
+		case '|' :
+			type = PIPE;
+			break;
+		case '<' :
+			type = FILEINPUT;
+			break;
+		case '>' :
+			type = FILEOUTPUT;
+			break;
 		default:
 			type = ARG;
 			while(inarg(*ptr))

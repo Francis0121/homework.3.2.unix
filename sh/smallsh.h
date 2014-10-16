@@ -10,8 +10,11 @@
 
 #define EOL				1 		// line finish
 #define ARG				2		//
-#define AMPERSAND		3		//
-#define	SEMICOLON		4		//
+#define AMPERSAND		3		// '&'
+#define	SEMICOLON		4		// ';' - line finish
+#define PIPE			5		// '|'
+#define FILEINPUT		6
+#define FILEOUTPUT		7
 
 #define MAXARG			512		// command line argument max size
 #define	MAXBUF			512		// read line buffer max size

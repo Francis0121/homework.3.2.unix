@@ -39,6 +39,12 @@ int procline(void){
 
 				narg = 0;
 				break;
+			case PIPE:
+				break;
+			case FILEINPUT:
+				break;
+			case FILEOUTPUT:
+				break;
 		}
 	}
 }
