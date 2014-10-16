@@ -2,15 +2,16 @@
 * small sh command control definitions
 */
 
+#include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/wait.h>
+#include <string.h>
 
 #define EOL				1 		// line finish
 #define ARG				2		//
 #define AMPERSAND		3		//
-#define	SEMICOLON		4
+#define	SEMICOLON		4		//
 
 #define MAXARG			512		// command line argument max size
 #define	MAXBUF			512		// read line buffer max size
@@ -20,3 +21,5 @@
 
 #define TRUE			1
 #define FALSE			0
+
+#define MAXPATH			128		// Command Line directory name max path
