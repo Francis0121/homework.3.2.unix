@@ -1,7 +1,7 @@
 #include "smallsh.h"
 
-char *prompt_begin = "francis:";
-char *prompt_end = "> ";
+char *prompt_begin = PROMT_PREFIX;
+char *prompt_end = PROMT_POSTFIX;
 
 int main(void){
 	char *prompt_buf;

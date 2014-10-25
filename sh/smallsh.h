@@ -25,4 +25,9 @@
 #define TRUE			1
 #define FALSE			0
 
-#define MAXPATH			128		// Command Line directory name max path
+#define MAXPATH			256		// Command Line directory name max path
+
+#define END_CMD 		"goodbye\n"
+#define END_MSG			"Bye bye!\n"
+#define PROMT_PREFIX	"francis:"
+#define PROMT_POSTFIX	"> "

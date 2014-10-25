@@ -55,6 +55,13 @@ int userin(char *p){
 		// ~ Is this new line And small max size buffer
 		if(c == '\n' && count < MAXBUF){
 			inpbuf[count] = '\0'; // finished lined
+
+			// ~ exit shell
+			if(strcmp(inpbuf, END_CMD) == 0){ // if End command match input buffer finished shell "goodbye"
+				printf("%s", END_MSG);
+				exit(0);
+			}
+			
 			return count; // return lien size
 		}
 
@@ -87,7 +94,7 @@ int gettok(char **outptr){
 	// ~ set token pointer to first token
 	*tok++ = *ptr;
 
-	// ~
+	// ~ set type variable
 	switch (*ptr++){
 		case '\n':
 			type = EOL;
@@ -109,6 +116,7 @@ int gettok(char **outptr){
 			break;
 		default:
 			type = ARG;
+			// ~ read normal string data
 			while(inarg(*ptr))
 				*tok++ = *ptr++;
 	}
