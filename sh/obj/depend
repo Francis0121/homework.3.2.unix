@@ -42,7 +42,11 @@ main.o: ../main.c /usr/include/stdc-predef.h ../smallsh.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h
 process.o: ../../command/util/process.c /usr/include/stdc-predef.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -154,7 +158,11 @@ args.o: ../module/args.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h
 file.o: ../module/file.c /usr/include/stdc-predef.h \
  ../module/../smallsh.h /usr/include/i386-linux-gnu/sys/wait.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -199,7 +207,11 @@ file.o: ../module/file.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h
 pipe.o: ../module/pipe.c /usr/include/stdc-predef.h \
  ../module/../smallsh.h /usr/include/i386-linux-gnu/sys/wait.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -244,7 +256,11 @@ pipe.o: ../module/pipe.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h
 redirection.o: ../module/redirection.c /usr/include/stdc-predef.h \
  ../module/../smallsh.h /usr/include/i386-linux-gnu/sys/wait.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -289,7 +305,11 @@ redirection.o: ../module/redirection.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h
 run.o: ../module/run.c /usr/include/stdc-predef.h ../module/../smallsh.h \
  /usr/include/i386-linux-gnu/sys/wait.h /usr/include/features.h \
  /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -334,4 +354,8 @@ run.o: ../module/run.c /usr/include/stdc-predef.h ../module/../smallsh.h \
  /usr/include/i386-linux-gnu/bits/stdio2.h /usr/include/string.h \
  /usr/include/xlocale.h /usr/include/i386-linux-gnu/bits/string.h \
  /usr/include/i386-linux-gnu/bits/string2.h \
- /usr/include/i386-linux-gnu/bits/string3.h
+ /usr/include/i386-linux-gnu/bits/string3.h /usr/include/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl.h \
+ /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/i386-linux-gnu/bits/stat.h \
+ /usr/include/i386-linux-gnu/bits/fcntl2.h

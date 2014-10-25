@@ -44,6 +44,15 @@ int procline(void){
 						index[0] = nIndex; // Pipe Size
 						pipe_exec(arg, index, type);
 					}
+				}else if(runType == RUN_INPUT){
+					if(narg > 1){
+						arg[narg] = NULL;
+						fileinput(arg, index, type);
+					}
+				}else if(runType == RUN_OUTPUT){
+					if(narg > 1){
+						fileoutput(arg, index, type);
+					}
 				}
 
 				if(toktype == EOL)
@@ -57,13 +66,13 @@ int procline(void){
 				index[++nIndex] = narg;
 				continue;
 			case FILEINPUT:
-				runType = RUN_REDIRECT;
-				fileinput();
-				break;
+				runType = RUN_INPUT;
+				index[++nIndex] = narg;
+				continue;
 			case FILEOUTPUT:
-				fileoutput();
-				runType = RUN_REDIRECT;
-				break;
+				runType = RUN_OUTPUT;
+				index[++nIndex] = narg;
+				continue;
 		}
 
 	}

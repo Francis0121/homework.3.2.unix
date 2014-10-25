@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <fcntl.h>
 
 #define EOL				1 		// line finish
 #define ARG				2		//
@@ -24,12 +25,15 @@
 
 #define RUN_NORMAL		0
 #define RUN_PIPE		1
-#define RUN_REDIRECT	2
+#define RUN_INPUT		2
+#define RUN_OUTPUT		3
 
 #define TRUE			1
 #define FALSE			0
 
 #define MAXPATH			256		// Command Line directory name max path
+
+#define FILE_PERMS		0644
 
 #define END_CMD 		"goodbye\n"
 #define END_MSG			"Bye bye!\n"
