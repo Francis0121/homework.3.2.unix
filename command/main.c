@@ -13,7 +13,7 @@ int main(void) {
     int i;
     int argc=0;
 
-    in = fopen("touchC.txt", "r");
+    in = fopen("chmodC.txt", "r");
     str = malloc(sizeof(char) * MAX_CHAR_SIZE);
 
     // ~ one line read
