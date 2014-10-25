@@ -1,0 +1,3 @@
+ls
+touch input.txt
+ls

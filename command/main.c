@@ -13,11 +13,12 @@ int main(void) {
     int i;
     int argc=0;
 
-    in = fopen("command.txt", "r");
+    in = fopen("touchC.txt", "r");
     str = malloc(sizeof(char) * MAX_CHAR_SIZE);
 
     // ~ one line read
     while(fgets(str, MAX_CHAR_SIZE, in) != NULL){
+		argc=0;
 		// ~ Print command string
 		fputs("-------------------------------------\n", stdout);
 		fputs("Command : ", stdout);

@@ -1,0 +1,8 @@
+ls
+ls -l
+ls -a
+ls -A
+ls -R
+ls -r
+ls bin -l
+ls bin util -l

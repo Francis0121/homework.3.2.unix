@@ -6,5 +6,3 @@ cat -bn main.c
 cat input.txt -n command.txt
 cat error.txt
 cat -n
-ls -l
-ls

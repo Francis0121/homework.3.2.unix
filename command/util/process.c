@@ -51,6 +51,5 @@ void exec_my_program(int *argc, char **argv) {
         printf("Waitpid error\n");
         exit(-1);
     }
-
 	free(path);
 }
