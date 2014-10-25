@@ -42,7 +42,7 @@ int procline(void){
 					if(narg > 1){ // Pipe 실행시 반드시 Arguments는 2개이상이어야 된다. command | command 이기 떄문에
 						arg[narg] = NULL;
 						index[0] = nIndex; // Pipe Size
-						pipe_exec(arg, index, type);
+						runPipe2(arg, index, type);
 					}
 				}else if(runType == RUN_INPUT){
 					if(narg > 1){

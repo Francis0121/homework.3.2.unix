@@ -1,7 +1,0 @@
-n context
-Directories, file systems and special files
-Process
-Signals and signal processing
-Signals and signal processing (2)
-Inter-process communication using pipes
-Advanced inter-process communications

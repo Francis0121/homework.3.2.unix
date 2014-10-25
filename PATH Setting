@@ -1,0 +1,2 @@
+echo $PATH
+export PATH=.:/home/francis/git/unix/command/bin:$PATH
