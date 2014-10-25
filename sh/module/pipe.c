@@ -47,7 +47,6 @@ int pipe_exec(char **cline, int *index, int where){
 				*(arg+j) = (char *) malloc(sizeof(char) * 1);
 				*(arg+j) = NULL;
 
-
 				execvp(*arg, arg);
 				perror(*arg);
 				exit(0);

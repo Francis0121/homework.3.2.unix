@@ -99,7 +99,7 @@ int gettok(char **outptr){
 		case '\n':
 			type = EOL;
 			break;
-		case '%' :
+		case '&' :
 			type = AMPERSAND;
 			break;
 		case ';' :
