@@ -8,11 +8,15 @@
 */
 int procline(void){
 	char *arg[MAXARG + 1]; // For run command pointer array
+	int index[MAXARG + 1]; // Pipe Argument Index
 	int toktype; // command token type
 	int narg; // now argument size
+	int nIndex; // pipe Argument index now position
 	int type; // Forground Or background
+	int runType = RUN_NORMAL; // |, <, >, >> check continous value
 
 	narg = 0;
+	nIndex = 0;
 
 	while(TRUE){
 		// ~ Do action from token type
@@ -29,23 +33,39 @@ int procline(void){
 				else
 					type = FOREGROUND;
 
-				if(narg != 0){
-					arg[narg] = NULL;
-					runcommand(arg, type);
+				if(runType == RUN_NORMAL){
+					if(narg != 0){
+						arg[narg] = NULL;
+						runcommand(arg, type);
+					}
+				}else if(runType == RUN_PIPE){
+					if(narg > 1){ // Pipe 실행시 반드시 Arguments는 2개이상이어야 된다. command | command 이기 떄문에
+						arg[narg] = NULL;
+						index[0] = nIndex; // Pipe Size
+						pipe_exec(arg, index, type);
+					}
 				}
 
 				if(toktype == EOL)
 					return;
 
 				narg = 0;
+				nIndex = 0;
 				break;
 			case PIPE:
-				break;
+				runType = RUN_PIPE;
+				index[++nIndex] = narg;
+				continue;
 			case FILEINPUT:
+				runType = RUN_REDIRECT;
+				fileinput();
 				break;
 			case FILEOUTPUT:
+				fileoutput();
+				runType = RUN_REDIRECT;
 				break;
 		}
+
 	}
 }
 
@@ -57,7 +77,7 @@ int procline(void){
 * @param where
 * 	type int : process execution position
 * @return
-* 	tpye int : isComplete?
+* 	type int : isComplete
 */
 int runcommand(char **cline, int where){
 	pid_t pid;

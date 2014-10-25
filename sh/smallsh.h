@@ -13,14 +13,18 @@
 #define AMPERSAND		3		// '&'
 #define	SEMICOLON		4		// ';' - line finish
 #define PIPE			5		// '|'
-#define FILEINPUT		6
-#define FILEOUTPUT		7
+#define FILEINPUT		6		// '<'
+#define FILEOUTPUT		7		// '>'
 
 #define MAXARG			512		// command line argument max size
 #define	MAXBUF			512		// read line buffer max size
 
 #define	FOREGROUND		0
 #define	BACKGROUND		1
+
+#define RUN_NORMAL		0
+#define RUN_PIPE		1
+#define RUN_REDIRECT	2
 
 #define TRUE			1
 #define FALSE			0
