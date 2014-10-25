@@ -17,7 +17,7 @@ int pipe_exec(char **cline, int *index, int where){
 	int i, j, pfd[2];
 	int size, pos;
 	pid_t pid;
-	char **arg;
+	char **arg, **arg2;
 
 	if (pipe(pfd) < 0)
 		perror("pipe error\n");
@@ -39,12 +39,14 @@ int pipe_exec(char **cline, int *index, int where){
 				// 그 이후에 값들은 index[2] - index[1]인데 그전의 argument 개수에서 지금 argument의 개수를 뺀것이다.
 				size = i == 0 ? index[1] : index[i + 1] - index[i];
 				arg = (char **) malloc(sizeof(char *) * size);
-				for(i=0; i<size; i++){
-					*(arg+i) = (char *) malloc(sizeof(char) * (strlen( *(cline+i) )+2) );
-					memcpy( (arg+i), (cline+i), strlen(*(cline+i))+1 );
+				for(j=0; j<size; j++){
+					*(arg+j) = (char *) malloc(sizeof(char) * (strlen( *(cline+j) )+2) );
+					memcpy( (arg+j), (cline+j), strlen(*(cline+j))+1 );
+//					printf("Arg %s\nCline %s\n", *(arg+j), *(cline+j));
 				}
-				*(arg+i) = (char *) malloc(sizeof(char) * 1);
-				*(arg+i) = NULL;
+				*(arg+j) = (char *) malloc(sizeof(char) * 1);
+				*(arg+j) = NULL;
+
 
 				execvp(*arg, arg);
 				perror(*arg);
@@ -61,20 +63,20 @@ int pipe_exec(char **cline, int *index, int where){
 					perror("Process[1] dup error\n");
 				if(close(pfd[0]) == -1 || close(pfd[1]) == -1)
 					perror("Process[1] close error\n");
-				// Copy 해야되는 위치가 변경되기 때문에 pos 변수를 계산하여 위치 이동
-				arg = (char **) malloc(sizeof(char *) * index[i+1]);
+
 				size = i+1 == index[0] ? strlen(*cline) - index[1] : index[i+2] - index[i+1];
 				pos = i+1 == index[0] ? index[i+1] : strlen(*cline);
-				arg = (char **) malloc(sizeof(char *) * size);
-				for(i=0; i<size; i++){
-					*(arg+i) = (char *) malloc(sizeof(char) * (strlen( *(cline+i+pos) )+2) );
-					memcpy( (arg+i), (cline+i+pos), strlen(*(cline+i+pos) )+1 );
+				arg2 = (char **) malloc(sizeof(char *) * size);
+				for(j=0; j<size; j++){
+					*(arg2+j) = (char *) malloc(sizeof(char) * (strlen( *(cline+j+pos) )+2) );
+					memcpy( (arg2+j), (cline+j+pos), strlen(*(cline+j+pos) )+1 );
+				//	printf("Arg2 %s\nCline %s\n", *(arg2+j), *(cline+j+pos));
 				}
-				*(arg+i) = (char *) malloc(sizeof(char) * 1);
-				*(arg+i) = NULL;
+				*(arg2+j) = (char *) malloc(sizeof(char) * 1);
+				*(arg2+j) = NULL;
 
-				execvp(*arg, arg);
-				perror(*arg);
+				execvp(*arg2, arg2);
+				perror(*arg2);
 				exit(0);
 		}
 	}
