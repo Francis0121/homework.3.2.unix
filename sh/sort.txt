@@ -1,0 +1,7 @@
+sort.txt
+smallsh.h
+sh
+obj
+module
+main.c
+Makefile
