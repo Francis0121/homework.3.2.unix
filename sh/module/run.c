@@ -43,7 +43,7 @@ int procline(void){
 						arg[narg] = NULL;
 						index[++nIndex] = narg;
 						index[0] = nIndex; // Pipe Size
-						runPipe2(arg, index, type);
+						runPipe(arg, index, type);
 					}
 				}else if(runType == RUN_INPUT){
 					if(narg > 1){
