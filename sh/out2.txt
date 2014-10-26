@@ -6,4 +6,4 @@ obj
 module
 main.c
 Makefile
-RedirectionExistFile
+RedirectExistFile

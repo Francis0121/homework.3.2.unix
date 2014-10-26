@@ -80,11 +80,9 @@ int fileoutput(char **cline, int *index, int where, int runType){
 			}
 			*(arg+si) = NULL;
 			if(runType == RUN_OUTPUT){
-				printf("Debug Not Exist\n");
 				if( (fd = open(name, O_WRONLY | O_CREAT | O_TRUNC, FILE_PERMS)) < 0)
 					perror("file open error\n");
 			}else if(runType == RUN_OUTPUT_EX){
-				printf("Debug Exist\n");
 				if( (fd = open(name, O_WRONLY | O_CREAT | O_APPEND, FILE_PERMS)) < 0)
 					perror("file open error\n");
 			}
