@@ -42,9 +42,7 @@ int procline(void){
 					if(narg > 1){ // Pipe 실행시 반드시 Arguments는 2개이상이어야 된다. command | command 이기 떄문에
 						arg[narg] = NULL;
 						index[++nIndex] = narg;
-						printf("[Debug] nIndex : %d , narg : %d\n", nIndex, narg);
 						index[0] = nIndex; // Pipe Size
-						printf("[Debug] nIndex : 0 , narg : %d\n", nIndex);
 						runPipe2(arg, index, type);
 					}
 				}else if(runType == RUN_INPUT){
@@ -67,7 +65,6 @@ int procline(void){
 			case PIPE:
 				runType = RUN_PIPE;
 				index[++nIndex] = narg;
-				printf("[Debug] nIndex : %d , narg : %d\n", nIndex, narg);
 				continue;
 			case FILEINPUT:
 				runType = RUN_INPUT;
