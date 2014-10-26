@@ -55,10 +55,12 @@ int fileinput(char **cline, int *index, int where){
 * 	type int * : each pipe line argument start index & index[0] = pipe size
 * @param where
 * 	type int : process execution position
+* @param runType
+* 	type int : run Option
 * @return
 * 	type int : isComplete
 */
-int fileoutput(char **cline, int *index, int where){
+int fileoutput(char **cline, int *index, int where, int runType){
 	pid_t pid;
 	int si, fd, str_len, status, row_size;
 	char **arg, *name;
@@ -77,9 +79,15 @@ int fileoutput(char **cline, int *index, int where){
 				memcpy( (arg + si), (cline + si), str_len);
 			}
 			*(arg+si) = NULL;
-
-			if( (fd = open(name, O_WRONLY | O_CREAT | O_TRUNC, FILE_PERMS)) < 0)
-				perror("file open error\n");
+			if(runType == RUN_OUTPUT){
+				printf("Debug Not Exist\n");
+				if( (fd = open(name, O_WRONLY | O_CREAT | O_TRUNC, FILE_PERMS)) < 0)
+					perror("file open error\n");
+			}else if(runType == RUN_OUTPUT_EX){
+				printf("Debug Exist\n");
+				if( (fd = open(name, O_WRONLY | O_CREAT | O_APPEND, FILE_PERMS)) < 0)
+					perror("file open error\n");
+			}
 			if (close(1) == -1)
 				perror("Process close error\n");
 			if (dup(fd) != 1)

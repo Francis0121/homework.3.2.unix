@@ -6,3 +6,4 @@ obj
 module
 main.c
 Makefile
+hello

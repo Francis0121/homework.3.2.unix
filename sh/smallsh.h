@@ -28,6 +28,7 @@
 #define RUN_PIPE		1
 #define RUN_INPUT		2
 #define RUN_OUTPUT		3
+#define RUN_OUTPUT_EX 	4
 
 #define TRUE			1
 #define FALSE			0

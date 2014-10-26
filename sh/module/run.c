@@ -50,9 +50,9 @@ int procline(void){
 						arg[narg] = NULL;
 						fileinput(arg, index, type);
 					}
-				}else if(runType == RUN_OUTPUT){
+				}else if(runType == RUN_OUTPUT || runType == RUN_OUTPUT_EX){
 					if(narg > 1){
-						fileoutput(arg, index, type);
+						fileoutput(arg, index, type, runType);
 					}
 				}
 
@@ -72,6 +72,10 @@ int procline(void){
 				continue;
 			case FILEOUTPUT:
 				runType = RUN_OUTPUT;
+				if(runType == RUN_OUTPUT && index[nIndex] == narg){
+					runType = RUN_OUTPUT_EX;
+					continue;
+				}
 				index[++nIndex] = narg;
 				continue;
 		}
