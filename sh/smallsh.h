@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
+#include <error.h>
 
 #define EOL				1 		// line finish
 #define ARG				2		//
@@ -39,3 +40,5 @@
 #define END_MSG			"Bye bye!\n"
 #define PROMT_PREFIX	"francis:"
 #define PROMT_POSTFIX	"> "
+
+#define MAX_PIPE_SIZE 	10

@@ -46,7 +46,8 @@ main.o: ../main.c /usr/include/stdc-predef.h ../smallsh.h \
  /usr/include/i386-linux-gnu/bits/fcntl.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h
+ /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/error.h \
+ /usr/include/i386-linux-gnu/bits/error.h
 process.o: ../../command/util/process.c /usr/include/stdc-predef.h \
  /usr/include/stdio.h /usr/include/features.h \
  /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -162,7 +163,8 @@ args.o: ../module/args.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/fcntl.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h
+ /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/error.h \
+ /usr/include/i386-linux-gnu/bits/error.h
 file.o: ../module/file.c /usr/include/stdc-predef.h \
  ../module/../smallsh.h /usr/include/i386-linux-gnu/sys/wait.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -211,7 +213,8 @@ file.o: ../module/file.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/fcntl.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h
+ /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/error.h \
+ /usr/include/i386-linux-gnu/bits/error.h
 pipe.o: ../module/pipe.c /usr/include/stdc-predef.h \
  ../module/../smallsh.h /usr/include/i386-linux-gnu/sys/wait.h \
  /usr/include/features.h /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -260,7 +263,8 @@ pipe.o: ../module/pipe.c /usr/include/stdc-predef.h \
  /usr/include/i386-linux-gnu/bits/fcntl.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h
+ /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/error.h \
+ /usr/include/i386-linux-gnu/bits/error.h
 run.o: ../module/run.c /usr/include/stdc-predef.h ../module/../smallsh.h \
  /usr/include/i386-linux-gnu/sys/wait.h /usr/include/features.h \
  /usr/include/i386-linux-gnu/sys/cdefs.h \
@@ -309,4 +313,5 @@ run.o: ../module/run.c /usr/include/stdc-predef.h ../module/../smallsh.h \
  /usr/include/i386-linux-gnu/bits/fcntl.h \
  /usr/include/i386-linux-gnu/bits/fcntl-linux.h \
  /usr/include/i386-linux-gnu/bits/stat.h \
- /usr/include/i386-linux-gnu/bits/fcntl2.h
+ /usr/include/i386-linux-gnu/bits/fcntl2.h /usr/include/error.h \
+ /usr/include/i386-linux-gnu/bits/error.h
