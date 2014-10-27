@@ -27,4 +27,5 @@ void split_command_line(char *str, int *argc, char **argv){
         memcpy(*(argv+*argc), ptr, (strlen(ptr)+1));
         (*argc)++;
     }
+	*(argv+*argc) = NULL;
 }

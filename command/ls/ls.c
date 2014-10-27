@@ -1,9 +1,15 @@
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pwd.h>
+#include <dirent.h>
+#include <time.h>
+#include <unistd.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+
+static const char * lookup[] = {"Jan", "Feb", "Mar", "Apr", "May"\
+				"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 #define TRUE 1
 #define FALSE 0
@@ -52,6 +58,7 @@ void set_option_flag(char *ch){
 */
 void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 	int i, j, strSize = 0;
+	char *name;
 	*pathSize = 0;
 	for(i=1; i<*argc; i++){
 		if(*(*(argv+i)+0) == '\0') continue;
@@ -64,42 +71,115 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 		}else{
 			*(pathList+*pathSize) = (char *) malloc(sizeof(char) * (strSize+1));
 			memcpy(*(pathList+((*pathSize)++)), *(argv+i), strSize+1);
+			name = *(pathList+((*pathSize)-1));
+			// ~ newLine removal
+			if(name[strlen(name)-1] == '\n'){
+				name[strlen(name)-1] = '\0';
+			}
 		}
 	}
 
+	// ~ current path information not exist - default value '.' current directory
+	if(*pathSize == 0){
+		*(pathList+0) = CUR_WORKING_DIR;
+		(*pathSize)++;
+	}
 }
 
+/**
+* qsort function
+* Compare String Ascending Order
+* @param vp1
+* 	type void * pointer
+* @param vp2
+* 	type vod * pointer
+* @return
+* 	type int : vp1 == vp2 = 0,
+* 				vp1 < vp2 = 1
+* 				vp1 > vp2 = -1
+*/
 int cmpStr(const void *vp1, const void *vp2) {
 	char * const *p1 = vp1;
 	char * const *p2 = vp2;
 	return strcmp(*p1, *p2);
 }
 
+/**
+* qsort function
+* Compare String Descending Order
+* @param vp1
+* 	type void * pointer
+* @param vp2
+* 	type vod * pointer
+* @return
+* 	type int : vp1 == vp2 = 0,
+* 				vp1 < vp2 = -1
+* 				vp1 > vp2 = 1
+*/
 int reverseCmpStr(const void *vp1, const void *vp2) {
 	char * const *p1 = vp1;
 	char * const *p2 = vp2;
 	return strcmp(*p2, *p1);
 }
 
+int printFileInformation(char *name){
+	struct stat sb;
+	struct tm * t;
+	char link_read[255];
+	ssize_t bytes_read;
+	stat(name, &sb);
+
+	if(!flagListDot && ( strcmp(name, ".") == 0 || strcmp(name, "..") == 0 )){
+		return (1);
+	}
+
+	if(flagLine) {
+		printf("%c", S_ISDIR(sb.st_mode) ? 'd' : \
+             S_ISFIFO(sb.st_mode) ? 'p' : \
+             S_ISLNK(sb.st_mode) ? 'l' : '-');
+
+		printf("%c", (S_IRUSR & sb.st_mode) ? 'r' : '-');
+		printf("%c", (S_IWUSR & sb.st_mode) ? 'w' : '-');
+		printf("%c", (S_IXUSR & sb.st_mode) ? 'x' : '-');
+		printf("%c", (S_IRGRP & sb.st_mode) ? 'r' : '-');
+		printf("%c", (S_IWGRP & sb.st_mode) ? 'w' : '-');
+		printf("%c", (S_IXGRP & sb.st_mode) ? 'x' : '-');
+		printf("%c", (S_IROTH & sb.st_mode) ? 'r' : '-');
+		printf("%c", ( S_IWOTH & sb.st_mode) ? 'w' : '-');
+		printf("%c", (S_IXOTH & sb.st_mode) ? 'x' : '-');
+		printf("  ");
+		printf("%d\t", sb.st_nlink);
+		printf("%s\t", user_from_uid(sb.st_uid,0));
+		printf("%s\t", group_from_gid(sb.st_gid,0));
+		printf("%5.0lu ", sb.st_size);
+		t = localtime(&sb.st_ctime);
+		printf("%s ", lookup[t->tm_mon]);
+		printf("%2.0d %2.0d:%2.0d ", t->tm_mday, t->tm_hour, t->tm_min);
+		printf("%s\n", name);
+	}else{
+		printf("%s\n", name);
+	}
+	return (1);
+}
+
 /**
 * @param argc
-*	type int : command line argument size at lest 2
+*	type int : command line argument size at lest 1
 * @param argv
-* 	type **char : Using "cat [option] ... [file]" - command line string
+* 	type **char : Using "ls [option] ... [file]" - command line string
 */
 int main(int argc, char **argv) {
-	int i, j;
-	char *name, *error;
+	// ~ string control variable
+	int dIndex, fIndex, i, pathSize = 0;
+	char *name, **pathList;
 
-	int pathSize = 0;
-	char **pathList;
-
+	// ~ directory variable
+	int fileSize = 0;
+	char **fileList;
 	struct dirent *d;
 	DIR *dp;
-	char **dirList;
-	struct stat statbuf;
-	int dirSize = 0;
 
+	// ~ Argument 가 1개 이하면 종료
 	if (argc < 1) {
 		perror("ls [OPTION] ... [FILES] ... \n");
 		exit(-1);
@@ -108,64 +188,51 @@ int main(int argc, char **argv) {
 	pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
 	control_argument(&argc, argv, &pathSize, pathList);
 
-	// ~ current path information not exist - default value '.' current directory
-	if(pathSize == 0){
-		*(pathList+0) = CUR_WORKING_DIR;
-		pathSize++;
-	}
-
-	for(i=0; i<pathSize; i++){
-		name = *(pathList+i);
-		// ~ newLine removal
-		if(name[strlen(name)-1] == '\n'){
-			name[strlen(name)-1] = '\0';
-		}
-
+	for(dIndex = 0; dIndex < pathSize; dIndex++){
+		name = *(pathList+dIndex);
+		fileSize = 0;
 		// Directory open, Judgement Fail
-		if((dp = opendir(name)) == NULL)
-			return (-1);
-
-		// Searching Directory and infinite loop. Exist inode directory print
-		dirSize =0;
-		while(d = readdir(dp)){
-			if(d->d_ino != 0){
-				//printf("%s\n", d->d_name);
-				dirSize++;
-			}
+		if((dp = opendir(name)) == NULL){
+			perror("Not open directory");
+			continue;
 		}
 
+		// Searching Directory and infinite loop. Exist inode directory counting
+		while(d = readdir(dp))
+			if(d->d_ino != 0)
+				fileSize++;
+
+		// ~ Back directory point And read directory name
 		rewinddir(dp);
-		dirList = (char **) malloc(sizeof(char *) * dirSize);
-		j = 0;
+		fileList = (char **) malloc(sizeof(char *) * fileSize);
+		// memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
+		memset(fileList, '\0', sizeof(char*) * fileSize);
+		fIndex=0;
 		while(d = readdir(dp)){
 			if(d->d_ino != 0){
-				*(dirList+j) = (char *) malloc(sizeof(char) * strlen(d->d_name)+1);
-				memcpy(*(dirList+(j++)), d->d_name, strlen(d->d_name));
+				*(fileList + fIndex) = (char *) malloc(sizeof(char) * strlen(d->d_name) + 1);
+				// memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
+				memset(*(fileList+fIndex), '\0', sizeof(char) * strlen(d->d_name) + 1);
+				memcpy(*(fileList + (fIndex++)), d->d_name, strlen(d->d_name));
 			}
 		}
 
+		// ~ sorting ascend or descend
 		if(flagReverse){
-			qsort((void *)dirList, dirSize, sizeof(char *), reverseCmpStr);
+			qsort((void *)fileList, fileSize, sizeof(char *), reverseCmpStr);
 		}else{
-			qsort((void *)dirList, dirSize, sizeof(char *), cmpStr);
+			qsort((void *)fileList, fileSize, sizeof(char *), cmpStr);
 		}
 
-		for(j=0; j<dirSize; j++){
-			if(!flagListDot && ( strcmp(*(dirList+j), ".") == 0 || strcmp(*(dirList+j), "..") == 0 )){
-				continue;
-			}
-
-			if(flagLine){
-				// ~ read stat information
-				if(stat(*(dirList+j), &statbuf) == -1){
-					fprintf(stderr, "Couldn't stat %s\n", *(dirList+j));
-				}
-				printf("%s\n", *(dirList+j));
-
-			}else{
-				printf("%s\n", *(dirList+j));
-			}
+		for(fIndex=  0; fIndex < fileSize; fIndex++){
+			name = *(fileList + fIndex);
+			printFileInformation(name);
 		}
+
+		for(i=0; i<fileSize; i++){
+			free(*(fileList+i));
+		}
+		free(fileList);
 
 		closedir(dp);
 	}
