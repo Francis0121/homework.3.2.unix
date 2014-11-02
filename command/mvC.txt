@@ -1,2 +1,4 @@
 mv input.txt input2.txt
+ls
 mv input2.txt input.txt
+ls

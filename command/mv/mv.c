@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <errno.h>
 
 #define TRUE 1
@@ -65,10 +66,10 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 int main(int argc, char **argv) {
     // ~ string control variable
     int dIndex, pathSize = 0;
-    char *name, **pathList;
+    char *source, *dest, **pathList;
 
-    // ~ Argument 가 1개 이하면 종료
-    if (argc < 1) {
+    // ~ Argument 가 3개 이하면 종료
+    if (argc < 3) {
         perror("mv [OPTION]… [-T] SOURCE DEST\n");
         exit(-1);
     }
@@ -76,10 +77,23 @@ int main(int argc, char **argv) {
     pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
     control_argument(&argc, argv, &pathSize, pathList);
 
-    for(dIndex = 0; dIndex < pathSize; dIndex++){
-        name = *(pathList+dIndex);
+    source = *(pathList + 0);
+    dest = *(pathList + 1);
 
-        printf("%s\n", name);
+    if(access(dest, F_OK)==0) {
+        printf("File %s exists", dest);
+        return ;
+    } else {
+        // ~ If the file doesn't exist, then link source and destnation and remove source to emulate the mv command.
+        if( !link(source, dest) ) {
+            // ~ Display the error occurred while trying to unlink the source.
+            if( unlink(source) ) {
+                perror("unlink");
+            }
+        } else {
+            //Display the error occurred while linking source and destination
+            perror("Source link error");
+        }
     }
 
     return 0;

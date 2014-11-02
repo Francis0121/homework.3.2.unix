@@ -149,8 +149,8 @@ int printFileInformation(char *name){
 		printf("%c", (S_IXOTH & sb.st_mode) ? 'x' : '-');
 		printf("  ");
 		printf("%d\t", sb.st_nlink);
-		printf("%s\t", user_from_uid(sb.st_uid,0));
-		printf("%s\t", group_from_gid(sb.st_gid,0));
+//		printf("%s\t", user_from_uid(sb.st_uid,0));
+//		printf("%s\t", group_from_gid(sb.st_gid,0));
 		printf("%5.0lu ", sb.st_size);
 		t = localtime(&sb.st_ctime);
 		printf("%s ", lookup[t->tm_mon]);
