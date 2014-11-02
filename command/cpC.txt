@@ -1,0 +1,3 @@
+cp input.txt input2.txt
+cp -R cp_test cp_test2
+cp -Rf cp_test cp_test2

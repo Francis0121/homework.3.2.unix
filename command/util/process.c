@@ -15,7 +15,7 @@
 void exec_my_program(int *argc, char **argv) {
     pid_t pid;
     // TODO : relative path  use "execvp" system call (after)
-    char *absolute_path = "/home/francis/git/unix/command/bin/";
+    char *absolute_path = "/home/pi/git/unix/command/bin/";
     char *path;
 	char *one;
     // ~ make path
@@ -40,10 +40,12 @@ void exec_my_program(int *argc, char **argv) {
 				path[strlen(path)-1] = '\0';
 			}
 			execl(path, one, (char *) 0);
+            printf("do?");
 		}else{
+            printf("%s\n", path);
 			execv(path, argv);
 		}
-        printf("Exec error\n");
+        perror("Exec error\n");
         exit(-1);
     }
 

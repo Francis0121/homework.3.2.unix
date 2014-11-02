@@ -6,8 +6,6 @@
 #define TRUE 1
 #define FALSE 0
 
-#define MAX_ARGUMENT_SIZE 10
-
 
 int flagForce = FALSE;
 int flagRecursive = FALSE;
@@ -59,6 +57,12 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
             }
         }
     }
+
+    // ~ current path information not exist - default value '.' current directory
+    if(*pathSize == 0){
+        *(pathList+0) = CUR_WORKING_DIR;
+        (*pathSize)++;
+    }
 }
 
 /**
@@ -72,9 +76,9 @@ int main(int argc, char **argv) {
     int dIndex, pathSize = 0;
     char *name, **pathList;
 
-    // ~ Argument 가 3개 이하면 종료 cp source, destination 필요
-    if (argc < 3) {
-        perror("cp[OPTION]… [-T] SOURCE DEST \n");
+    // ~ Argument 가 1개 이하면 종료
+    if (argc < 1) {
+        perror("ls [OPTION] ... [FILES] ... \n");
         exit(-1);
     }
     // ~ control to command line argument
