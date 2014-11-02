@@ -1,12 +1,14 @@
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <pwd.h>
-#include <dirent.h>
-#include <time.h>
-#include <unistd.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <dirent.h>
+#include <fcntl.h>
+#include <pwd.h>
+#include <grp.h>
+#include <unistd.h>
 
 static const char * lookup[] = {"Jan", "Feb", "Mar", "Apr", "May"\
 				"Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -124,7 +126,10 @@ int reverseCmpStr(const void *vp1, const void *vp2) {
 
 int printFileInformation(char *name){
 	struct stat sb;
-	struct tm * t;
+    struct passwd *pwd;
+    struct group *grp;
+    struct tm * t;
+
 	char link_read[255];
 	ssize_t bytes_read;
 	stat(name, &sb);
@@ -134,28 +139,47 @@ int printFileInformation(char *name){
 	}
 
 	if(flagLine) {
-		printf("%c", S_ISDIR(sb.st_mode) ? 'd' : \
-             S_ISFIFO(sb.st_mode) ? 'p' : \
-             S_ISLNK(sb.st_mode) ? 'l' : '-');
+        //Display the type of file.
+        switch (sb.st_mode & S_IFMT)
+        {
+            case S_IFBLK:  printf("b");
+                break;
+            case S_IFCHR:  printf("c");
+                break;
+            case S_IFDIR:  printf("d");
+                break;
+            case S_IFIFO:  printf("p");
+                break;
+            case S_IFLNK:  printf("l");
+                break;
+            case S_IFREG:  printf("-");
+                break;
+            case S_IFSOCK: printf("s");
+                break;
+            default:       printf("u");
+                break;
+        }
 
-		printf("%c", (S_IRUSR & sb.st_mode) ? 'r' : '-');
-		printf("%c", (S_IWUSR & sb.st_mode) ? 'w' : '-');
-		printf("%c", (S_IXUSR & sb.st_mode) ? 'x' : '-');
-		printf("%c", (S_IRGRP & sb.st_mode) ? 'r' : '-');
-		printf("%c", (S_IWGRP & sb.st_mode) ? 'w' : '-');
-		printf("%c", (S_IXGRP & sb.st_mode) ? 'x' : '-');
-		printf("%c", (S_IROTH & sb.st_mode) ? 'r' : '-');
-		printf("%c", ( S_IWOTH & sb.st_mode) ? 'w' : '-');
-		printf("%c", (S_IXOTH & sb.st_mode) ? 'x' : '-');
-		printf("  ");
-		printf("%d\t", sb.st_nlink);
-//		printf("%s\t", user_from_uid(sb.st_uid,0));
-//		printf("%s\t", group_from_gid(sb.st_gid,0));
-		printf("%5.0lu ", sb.st_size);
-		t = localtime(&sb.st_ctime);
-		printf("%s ", lookup[t->tm_mon]);
-		printf("%2.0d %2.0d:%2.0d ", t->tm_mday, t->tm_hour, t->tm_min);
-		printf("%s\n", name);
+        printf("%c", (S_IRUSR & sb.st_mode) ? 'r' : '-');
+        printf("%c", (S_IWUSR & sb.st_mode) ? 'w' : '-');
+        printf("%c", (S_IXUSR & sb.st_mode) ? 'x' : '-');
+        printf("%c", (S_IRGRP & sb.st_mode) ? 'r' : '-');
+        printf("%c", (S_IWGRP & sb.st_mode) ? 'w' : '-');
+        printf("%c", (S_IXGRP & sb.st_mode) ? 'x' : '-');
+        printf("%c", (S_IROTH & sb.st_mode) ? 'r' : '-');
+        printf("%c", ( S_IWOTH & sb.st_mode) ? 'w' : '-');
+        printf("%c", (S_IXOTH & sb.st_mode) ? 'x' : '-');
+        printf("  ");
+        printf("%3ld ", (long) sb.st_nlink);//Display the number of links.
+        grp = getgrgid(sb.st_gid);
+        pwd = getpwuid(sb.st_uid);
+        printf("%4s %4s ", pwd->pw_name,grp->gr_name);//Display the username and group name.
+        printf("%5lld ",(long long) sb.st_size);//Display the size of the file.
+        printf("%5.0lu ", sb.st_size);
+        t = localtime(&sb.st_ctime);
+        printf("%s ", lookup[t->tm_mon]);
+        printf("%2.0d %2.0d:%2.0d ", t->tm_mday, t->tm_hour, t->tm_min);
+        printf("%s\n", name);
 	}else{
 		printf("%s\n", name);
 	}

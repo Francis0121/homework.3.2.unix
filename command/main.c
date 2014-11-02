@@ -7,13 +7,13 @@
 /**
 *   Main
 */
-int main(void) {
+int main(int size, char **param) {
     FILE *in;
     char *str, **argv;
     int i;
     int argc=0;
 
-    in = fopen("chmodC.txt", "r");
+    in = fopen(param[1], "r");
     str = malloc(sizeof(char) * MAX_CHAR_SIZE);
 
     // ~ one line read
