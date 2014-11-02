@@ -2,31 +2,24 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#include <unistd.h>
 
 #define TRUE 1
 #define FALSE 0
 
+#define ERROR_LENGHT 256
 #define MAX_ARGUMENT_SIZE 10
+#define PERMS 0755
 
-int flagForce = FALSE;
-int flagRemoveComment = FALSE;
-int flagRecursive = FALSE;
+int flagErrorComment = FALSE;
 
 /**
 * @param ch
-* 	type *char : option string character - 'i' , 'r'
+* 	type *char : option string character - 'p'
 */
 void set_option_flag(char *ch){
     switch(*ch){
-        case 'f':
-           flagForce = TRUE;
-            break;
-        case 'i':
-            flagRemoveComment = TRUE;
-            break;
-        case 'r':
-            flagRecursive = TRUE;
+        case 'p':
+            flagErrorComment = TRUE;
             break;
     }
 }
@@ -63,7 +56,6 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
             }
         }
     }
-
 }
 
 /**
@@ -76,12 +68,14 @@ int main(int argc, char **argv) {
     // ~ string control variable
     int dIndex, pathSize = 0;
     char *name, **pathList;
+    char error[ERROR_LENGHT];
 
-    // ~ Argument 가 1개 이하면 종료
-    if (argc < 1) {
-        perror("rm [OPTION] ... FILE ...\n");
+    // ~ Argument 가 2개 이하면 종료
+    if (argc < 2) {
+        perror("mkdir [OPTION] ... DIRECTORY ...\n");
         exit(-1);
     }
+
     // ~ control to command line argument
     pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
     control_argument(&argc, argv, &pathSize, pathList);
@@ -89,16 +83,14 @@ int main(int argc, char **argv) {
     for(dIndex = 0; dIndex < pathSize; dIndex++){
         name = *(pathList+dIndex);
 
-        // ~ Check for existence of the file.
-        if(!access(name,F_OK)) {
-            // ~ Unlink the file.
-            if(unlink(name)) {
-                // ~ Displaying the error occurred while trying to unlink the file.
-                perror("File unlink error");
-            }
+        // ~ Create a directory with the name specified in the argument.
+        if(!mkdir(name,PERMS)) {
+            // ~ Success
         } else {
-            // ~Display the error occurred while trying to access the file.
-            perror("File can't access");
+            // ~ Display the error occurred while trying to create the directory.
+            if(!flagErrorComment) {
+                fprintf(stderr, "mkdir : cannot creat directory '%s' : File exist\n", name);
+            }
         }
     }
 

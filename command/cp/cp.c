@@ -10,7 +10,7 @@
 
 #define MAX_ARGUMENT_SIZE 10
 #define BUF_SIZE 512
-#define PERMS 0644
+#define PERMS 0755
 
 int flagForce = FALSE;
 int flagRecursive = FALSE;
