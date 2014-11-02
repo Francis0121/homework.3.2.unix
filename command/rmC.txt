@@ -1,0 +1,3 @@
+cp input.txt temp.txt
+rm temp.txt
+ls
