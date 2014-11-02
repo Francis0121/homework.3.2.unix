@@ -1,13 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <errno.h>
 
 #define TRUE 1
 #define FALSE 0
 
 #define MAX_ARGUMENT_SIZE 10
-
+#define BUF_SIZE 512
+#define PERMS 0644
 
 int flagForce = FALSE;
 int flagRecursive = FALSE;
@@ -69,8 +72,10 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 */
 int main(int argc, char **argv) {
     // ~ string control variable
-    int dIndex, pathSize = 0;
-    char *name, **pathList;
+    int pathSize = 0;
+    int fdSource, fdDest, nread;
+    char *source, *dest, **pathList;
+    char buffer[BUF_SIZE];
 
     // ~ Argument 가 3개 이하면 종료 cp source, destination 필요
     if (argc < 3) {
@@ -81,10 +86,42 @@ int main(int argc, char **argv) {
     pathList = (char **) malloc(sizeof(char *) * MAX_ARGUMENT_SIZE);
     control_argument(&argc, argv, &pathSize, pathList);
 
-    for(dIndex = 0; dIndex < pathSize; dIndex++){
-        name = *(pathList+dIndex);
+    source = *(pathList+0);
+    dest = *(pathList+1);
 
-        printf("%s\n", name);
+    // ~ Check for existence of file
+    if(!access(source,F_OK)) {
+        // ~ If file1 exists, then open it in read mode
+        if((fdSource = open(source,O_RDONLY)) > 0) {
+            // ~ If files to exists, then open in write mode otherwise create the file.
+            if((fdDest = open(dest,O_CREAT|O_WRONLY, PERMS)) > 0) {
+                // ~ Read data into buffer from file1 and write it to file2.
+                while((nread=read(fdSource, buffer, BUF_SIZE))>0){
+                    if(write(fdDest, buffer, nread) < nread){
+                        close(fdSource);
+                        close(fdDest);
+                        perror("Write error");
+                    }
+                }
+
+                close(fdSource); //Close source file descriptor
+                close(fdDest); //Close destination file descriptor
+
+                if(nread < 0){
+                    perror("Last read error");
+                }
+
+            } else {
+                // ~ Display the error occurred while opening destination file.
+                perror("Destination open errror");
+            }
+        } else {
+            // ~ Display the error occurred while opening source file
+            perror("Source open error");
+        }
+    } else {
+        // ~ Display the error occurred while checking for existence of source file.
+        perror("Can not access source file");
     }
 
     return 0;

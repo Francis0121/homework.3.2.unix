@@ -40,9 +40,7 @@ void exec_my_program(int *argc, char **argv) {
 				path[strlen(path)-1] = '\0';
 			}
 			execl(path, one, (char *) 0);
-            printf("do?");
 		}else{
-            printf("%s\n", path);
 			execv(path, argv);
 		}
         perror("Exec error\n");
