@@ -21,7 +21,7 @@ int flagRecursive = FALSE;
 */
 void set_option_flag(char *ch){
     switch(*ch){
-        case 'l':
+        case 'f':
             flagForce = TRUE;
             break;
         case 'R':

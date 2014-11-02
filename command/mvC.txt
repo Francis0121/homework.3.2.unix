@@ -1,0 +1,2 @@
+mv input.txt input2.txt
+mv input2.txt input.txt
