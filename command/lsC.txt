@@ -1,6 +1,2 @@
-ls
-ls -r
-ls -l
-ls bin -l
-ls util -al
-ls bin util -l
+ls -la
+ls -lA

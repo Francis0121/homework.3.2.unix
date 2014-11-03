@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
     dest = *(pathList + 1);
 
     if(access(dest, F_OK)==0) {
-        printf("File %s exists", dest);
+        printf("mv: '%s' File not exists\n", dest);
         return ;
     } else {
         // ~ If the file doesn't exist, then link source and destnation and remove source to emulate the mv command.
@@ -92,7 +92,9 @@ int main(int argc, char **argv) {
             }
         } else {
             //Display the error occurred while linking source and destination
-            perror("Source link error");
+            if(!flagForce){
+                perror("Source link error");
+            }
         }
     }
 

@@ -8,6 +8,10 @@
 #define FALSE 0
 
 #define MAX_ARGUMENT_SIZE 10
+#define MAX_PROMPT_SIZE 512
+
+#define PR_YES01  "yes"
+#define PR_YES02  "y"
 
 int flagForce = FALSE;
 int flagRemoveComment = FALSE;
@@ -76,6 +80,7 @@ int main(int argc, char **argv) {
     // ~ string control variable
     int dIndex, pathSize = 0;
     char *name, **pathList;
+    char prompt[MAX_PROMPT_SIZE];
 
     // ~ Argument 가 1개 이하면 종료
     if (argc < 1) {
@@ -89,6 +94,14 @@ int main(int argc, char **argv) {
     for(dIndex = 0; dIndex < pathSize; dIndex++){
         name = *(pathList+dIndex);
 
+        if(flagRemoveComment){
+            printf("rm : remove regular file '%s' ? ", name);
+
+            scanf("%s", prompt);
+            if(strcmp(prompt, PR_YES01) != 0 && strcmp(prompt, PR_YES02) != 0){
+                continue;
+            }
+        }
         // ~ Check for existence of the file.
         if(!access(name,F_OK)) {
             // ~ Unlink the file.
@@ -97,8 +110,11 @@ int main(int argc, char **argv) {
                 perror("File unlink error");
             }
         } else {
-            // ~Display the error occurred while trying to access the file.
-            perror("File can't access");
+            if(!flagForce){
+                // ~Display the error occurred while trying to access the file.
+                fprintf(stderr, "rm : '%s' don't delete. No such file or directory\n", name);
+                exit(1);
+            }
         }
     }
 
