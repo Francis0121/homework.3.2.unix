@@ -124,6 +124,13 @@ int reverseCmpStr(const void *vp1, const void *vp2) {
 	return strcmp(*p2, *p1);
 }
 
+/**
+* Print file information
+* @param name
+*   type char * : file or directory name
+* @return
+*   type int : succes
+*/
 int printFileInformation(char *name){
 	struct stat sb;
     struct passwd *pwd;
@@ -181,10 +188,82 @@ int printFileInformation(char *name){
         printf("%2.0d %2.0d:%2.0d ", t->tm_mday, t->tm_hour, t->tm_min);
         printf("%s\n", name);
 	}else{
-		printf("%s\n", name);
+		printf("%s  ", name);
 	}
 	return (1);
 }
+
+/**
+* @param name
+*   type char * : argument
+* @return
+*   int
+*/
+int recursiveLs(DIR *dp){
+    int fIndex, i;
+    int fileSize = 0;
+    char *name, **fileList;
+    struct dirent *d;
+    struct stat sb;
+    DIR *newDp;
+
+    // Searching Directory and infinite loop. Exist inode directory counting
+    while(d = readdir(dp))
+        if(d->d_ino != 0)
+            fileSize++;
+
+    // ~ Back directory point And read directory name
+    rewinddir(dp);
+    fileList = (char **) malloc(sizeof(char *) * fileSize);
+    // memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
+    memset(fileList, '\0', sizeof(char*) * fileSize);
+    fIndex=0;
+    while(d = readdir(dp)){
+        if(d->d_ino != 0){
+            *(fileList + fIndex) = (char *) malloc(sizeof(char) * strlen(d->d_name) + 1);
+            // memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
+            memset(*(fileList+fIndex), '\0', sizeof(char) * strlen(d->d_name) + 1);
+            memcpy(*(fileList + (fIndex++)), d->d_name, strlen(d->d_name));
+        }
+    }
+
+    // ~ sorting ascend or descend
+    if(flagReverse){
+        qsort((void *)fileList, fileSize, sizeof(char *), reverseCmpStr);
+    }else{
+        qsort((void *)fileList, fileSize, sizeof(char *), cmpStr);
+    }
+
+    for(fIndex=  0; fIndex < fileSize; fIndex++){
+        name = *(fileList + fIndex);
+        printFileInformation(name);
+    }
+
+    if(flagRecursive) {
+        for (fIndex = 0; fIndex < fileSize; fIndex++) {
+            name = *(fileList + fIndex);
+            stat(name, &sb);
+            switch (sb.st_mode & S_IFMT) {
+                case S_IFDIR:
+                    if ((newDp = opendir(name)) == NULL) {
+                        perror("Not open directory");
+                        continue;
+                    }
+                    recursiveLs(newDp);
+                    closedir(newDp);
+                    break;
+            }
+        }
+    }
+
+    for(i=0; i<fileSize; i++){
+        free(*(fileList+i));
+    }
+    free(fileList);
+
+    closedir(dp);
+}
+
 
 /**
 * @param argc
@@ -194,13 +273,10 @@ int printFileInformation(char *name){
 */
 int main(int argc, char **argv) {
 	// ~ string control variable
-	int dIndex, fIndex, i, pathSize = 0;
+	int dIndex, i, pathSize = 0;
 	char *name, **pathList;
 
 	// ~ directory variable
-	int fileSize = 0;
-	char **fileList;
-	struct dirent *d;
 	DIR *dp;
 
 	// ~ Argument 가 1개 이하면 종료
@@ -213,53 +289,26 @@ int main(int argc, char **argv) {
 	control_argument(&argc, argv, &pathSize, pathList);
 
 	for(dIndex = 0; dIndex < pathSize; dIndex++){
-		name = *(pathList+dIndex);
-		fileSize = 0;
+        name = *(pathList+dIndex);
+        if(pathSize > 1){
+            printf("%s:\n", name);
+        }
+
 		// Directory open, Judgement Fail
 		if((dp = opendir(name)) == NULL){
 			perror("Not open directory");
 			continue;
 		}
 
-		// Searching Directory and infinite loop. Exist inode directory counting
-		while(d = readdir(dp))
-			if(d->d_ino != 0)
-				fileSize++;
-
-		// ~ Back directory point And read directory name
-		rewinddir(dp);
-		fileList = (char **) malloc(sizeof(char *) * fileSize);
-		// memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
-		memset(fileList, '\0', sizeof(char*) * fileSize);
-		fIndex=0;
-		while(d = readdir(dp)){
-			if(d->d_ino != 0){
-				*(fileList + fIndex) = (char *) malloc(sizeof(char) * strlen(d->d_name) + 1);
-				// memory 초기화를 해주지 않으면 쓰레기 값이 남아있어서 해줌.
-				memset(*(fileList+fIndex), '\0', sizeof(char) * strlen(d->d_name) + 1);
-				memcpy(*(fileList + (fIndex++)), d->d_name, strlen(d->d_name));
-			}
-		}
-
-		// ~ sorting ascend or descend
-		if(flagReverse){
-			qsort((void *)fileList, fileSize, sizeof(char *), reverseCmpStr);
-		}else{
-			qsort((void *)fileList, fileSize, sizeof(char *), cmpStr);
-		}
-
-		for(fIndex=  0; fIndex < fileSize; fIndex++){
-			name = *(fileList + fIndex);
-			printFileInformation(name);
-		}
-
-		for(i=0; i<fileSize; i++){
-			free(*(fileList+i));
-		}
-		free(fileList);
-
-		closedir(dp);
+        recursiveLs(dp);
+        if(pathSize > 1){
+            printf("\n");
+        }
 	}
+
+    if(!flagLine) {
+        printf("\n");
+    }
 
 	return 0;
 }

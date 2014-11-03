@@ -14,6 +14,7 @@ int procline(void){
 	int nIndex; // pipe Argument index now position
 	int type; // Forground Or background
 	int runType = RUN_NORMAL; // |, <, >, >> check continous value
+    int nReturn = 0;
 
 	narg = 0;
 	nIndex = 0;
@@ -36,7 +37,7 @@ int procline(void){
 				if(runType == RUN_NORMAL){
 					if(narg != 0){
 						arg[narg] = NULL;
-						runcommand(arg, type);
+						nReturn = runcommand(arg, type);
 					}
 				}else if(runType == RUN_PIPE){
 					if(narg > 1){ // Pipe 실행시 반드시 Arguments는 2개이상이어야 된다. command | command 이기 떄문에
@@ -57,7 +58,7 @@ int procline(void){
 				}
 
 				if(toktype == EOL)
-					return;
+					return (nReturn);
 
 				narg = 0;
 				nIndex = 0;
@@ -81,6 +82,7 @@ int procline(void){
 		}
 
 	}
+
 }
 
 /**
@@ -96,6 +98,28 @@ int procline(void){
 int runcommand(char **cline, int where){
 	pid_t pid;
 	int status;
+    char *name;
+    char cwd[MAXPATH];
+
+    name = *(cline + 1);
+    if(strcmp(*cline, CD_CMD) == 0){
+        if(!chdir(name)) {
+            printf("Current working directory changed to ");
+            // ~ Stores the Current working directory in cwd if NULL is not returned.
+            if(getcwd(cwd,sizeof(cwd)) != NULL) {
+                // ~ Display the current working directory.
+                puts(cwd);
+            } else {
+                // ~ Display the error occurred with getcwd.
+                perror("getcwd");
+            }
+        } else {
+            // ~ Display the occur that occurred while trying to change the current working directory.
+            perror("chdir");
+        }
+        return (DO_CMD);
+    }
+
 
 	switch (pid = fork()){
 		case -1:

@@ -6,7 +6,6 @@
 #define TRUE 1
 #define FALSE 0
 
-#define CUR_WORKING_DIR "."
 #define MAX_ARGUMENT_SIZE 10
 #define MAX_LENGTH 256
 
@@ -39,7 +38,7 @@ void control_argument(int *argc, char **argv, int *pathSize, char **pathList){
 
     // ~ current path information not exist - default value '.' current directory
     if(*pathSize == 0){
-        *(pathList+0) = CUR_WORKING_DIR;
+        *(pathList+0) = getenv( "HOME" );
         (*pathSize)++;
     }
 }

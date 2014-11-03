@@ -38,8 +38,11 @@
 #define FILE_PERMS		0644
 
 #define END_CMD 		"goodbye\n"
+#define CD_CMD          "cd"
 #define END_MSG			"Bye bye!\n"
 #define PROMT_PREFIX	"francis:"
 #define PROMT_POSTFIX	"> "
 
 #define MAX_PIPE_SIZE 	10
+
+#define DO_CMD          10

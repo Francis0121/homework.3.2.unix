@@ -1,5 +1,6 @@
 ls
+ls -r
 ls -l
 ls bin -l
-ls util -l
+ls util -al
 ls bin util -l
