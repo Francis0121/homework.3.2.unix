@@ -36,13 +36,16 @@ void main(void){
 
 int client(int id){
     int n, flagExit;
+    pid_t pid;
+
+    pid = getpid();
 
     // ~ Read the filename from standard input, write it as a message to the IPC descriptor.
     if (fgets(mesg.mesg_data, MAXMESGDATA, stdin) == NULL) {
         perror("filename read error");
         return (-1);
     }
-
+    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
     n = strlen(mesg.mesg_data);
 
     // ~ ignore the newline from fgets()
@@ -51,17 +54,15 @@ int client(int id){
 
     // ~ overwrite newline at end
     mesg.mesg_data[n] = '\0';
-    mesg.mesg_len = n;
+    mesg.mesg_len = n + 4; // + 4 (sizeof(pid))
     // ~ send messages of this type
     mesg.mesg_type = 1;
+    mesg.client_pid = pid;
     mesg_send(id, &mesg);
 
     // ~ Receive the message from the IPC descriptor and write the data to the standard output.
     // ~ receive messages of this type
-    mesg.mesg_type = 2;
-
-    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
-
+    mesg.mesg_type = pid;
     while( (n = mesg_recv(id, &mesg)) > 0) {
         if (write(STDOUT_FILENO, mesg.mesg_data, n) != n) {
             perror("data write error");

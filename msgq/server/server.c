@@ -1,9 +1,11 @@
 #include "../msgq.h"
 #include "../mesg.h"
 
-Mesg mesg;
+Mesg rcvMesg, sendMesg;
+pid_t clients[MAX_CLIENT];
+int clients_size = 0;
 
-
+int isvalueinarray(pid_t val);
 int server(int id);
 
 /**
@@ -31,58 +33,76 @@ void main(void){
     exit(0);
 }
 
+int isvalueinarray(pid_t val){
+    int i;
+    for (i=0; i < MAX_CLIENT; i++) {
+        if (clients[i] == val)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 int server(int id){
 
-    int n, filefd, flagExit;
+    int n, filefd, flagExit, i;
     char buf[256];
+    pid_t pid;
 
     // ~ Read the filename message from the IPC descriptor.
     // ~ receive messages of this type
-    mesg.mesg_type = 1;
+    rcvMesg.mesg_type = 1;
 
-    if ( (n = mesg_recv(id, &mesg)) <= 0){
+    if ( (n = mesg_recv(id, &rcvMesg)) <= 0){
         perror("server: filename read error");
         return (-1);
     }
 
     // ~ null terminate filename
-    mesg.mesg_data[n] = '\0';
+    n -= 4; // sizeof(pid) delete
+    rcvMesg.mesg_data[n] = '\0';
+    pid = rcvMesg.client_pid;
     // ~ send messages of this type
-    mesg.mesg_type = 2;
-    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
-
-    if(flagExit != 0) {
-        if ((filefd = open(mesg.mesg_data, 0)) < 0) {
-            // ~ Error. Format an error message and send it back to the client.
-            sprintf(buf, ": can't open, %s\n", mesg.mesg_data);
-            strcat(mesg.mesg_data, buf);
-            mesg.mesg_len = strlen(mesg.mesg_data);
-            mesg_send(id, &mesg);
-        } else {
-            // ~ Read the data from the file and send a message to the IPC descriptor.
-            printf("file name : %s\n\n", mesg.mesg_data);
-            while ((n = read(filefd, mesg.mesg_data, MAXMESGDATA)) > 0) {
-                mesg.mesg_len = n;
-                mesg_send(id, &mesg);
-            }
-            close(filefd);
-
-            if (n < 0) {
-                perror("sever: read error");
-                return (-1);
-            }
-        }
-    }else{
-        mesg_send(id, &mesg);
+    if(!isvalueinarray(pid)){
+        clients[clients_size++] = pid;
     }
 
-    // ~ Send a message with a length of 0 to signify the end.
-    mesg.mesg_len = 0;
-    mesg_send(id, &mesg);
+    for(i=0; i<clients_size; i++){
+        printf("pid : %d, filename : %s\n", clients[i], rcvMesg.mesg_data);
+        flagExit = strcmp(rcvMesg.mesg_data, EXIT_MSG);
 
-    // ~ Exit server
-    if(flagExit == 0){
-        return (0);
+        sendMesg.mesg_type = clients[i];
+        if(flagExit != 0) {
+            if ((filefd = open(rcvMesg.mesg_data, 0)) < 0) {
+                // ~ Error. Format an error message and send it back to the client.
+                sprintf(buf, ": can't open, %s\n", rcvMesg.mesg_data);
+                strcat(sendMesg.mesg_data, buf);
+                sendMesg.mesg_len = strlen(sendMesg.mesg_data);
+                mesg_send(id, &sendMesg);
+            } else {
+                // ~ Read the data from the file and send a message to the IPC descriptor.
+                while ((n = read(filefd, sendMesg.mesg_data, MAXMESGDATA)) > 0) {
+                    sendMesg.mesg_len = n;
+                    mesg_send(id, &sendMesg);
+                }
+                close(filefd);
+
+                if (n < 0) {
+                    perror("sever: read error");
+                    return (-1);
+                }
+            }
+        }else{
+            mesg_send(id, &rcvMesg);
+        }
+
+        // ~ Send a message with a length of 0 to signify the end.
+        sendMesg.mesg_len = 0;
+        mesg_send(id, &sendMesg);
+
+        // ~ Exit server
+        if(flagExit == 0){
+            return (0);
+        }
     }
 
     return(1);

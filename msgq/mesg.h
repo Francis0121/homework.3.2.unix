@@ -1,3 +1,4 @@
+#include <fcntl.h>
 /**
 * Definition of "our" message.
 *
@@ -13,8 +14,12 @@
 typedef struct {
     int mesg_len; // #bytes in mesg_data, can be 0 or > 0
     long mesg_type; // message type, must be > 0
+    pid_t client_pid; //
     char mesg_data[MAXMESGDATA];
 } Mesg;
 
 // ~ exit msg
 #define EXIT_MSG "exit"
+
+// ~ Max Client size
+#define MAX_CLIENT 10

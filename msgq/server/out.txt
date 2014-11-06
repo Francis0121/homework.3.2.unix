@@ -1,0 +1,9 @@
+sort.txt
+smallsh.h
+sh
+out.txt
+obj
+module
+main.c
+Makefile
+RedirectionExistFile
