@@ -15,3 +15,6 @@ typedef struct {
     long mesg_type; // message type, must be > 0
     char mesg_data[MAXMESGDATA];
 } Mesg;
+
+// ~ exit msg
+#define EXIT_MSG "exit"

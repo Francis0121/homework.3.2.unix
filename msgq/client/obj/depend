@@ -28,7 +28,11 @@ client.o: ../client.c ../../msgq.h /usr/include/stdio.h \
  /usr/include/i386-linux-gnu/bits/select2.h \
  /usr/include/i386-linux-gnu/sys/sysmacros.h \
  /usr/include/i386-linux-gnu/bits/pthreadtypes.h /usr/include/alloca.h \
- /usr/include/i386-linux-gnu/bits/stdlib.h \
+ /usr/include/i386-linux-gnu/bits/stdlib.h /usr/include/unistd.h \
+ /usr/include/i386-linux-gnu/bits/posix_opt.h \
+ /usr/include/i386-linux-gnu/bits/environments.h \
+ /usr/include/i386-linux-gnu/bits/confname.h /usr/include/getopt.h \
+ /usr/include/i386-linux-gnu/bits/unistd.h \
  /usr/include/i386-linux-gnu/sys/ipc.h \
  /usr/include/i386-linux-gnu/bits/ipctypes.h \
  /usr/include/i386-linux-gnu/bits/ipc.h \

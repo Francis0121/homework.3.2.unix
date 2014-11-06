@@ -10,13 +10,21 @@ int client(int id);
 */
 void main(void){
 
-    int id;
+    int id, flag;
 
     // ~ Open the single message queue. The server must have already created it.
-    if ( (id = msgget(MKEY1, 0)) < 0)
+    if ( (id = msgget(MKEY1, 0)) < 0) {
         perror("client: can't msgget message queue 1");
+        exit(0);
+    }
 
-    client(id);
+    do{
+        printf("input file name > ");
+    } while( (flag = client(id)) > 0);
+
+    if( flag < 0){
+        printf("program error : exit \n");
+    }
 
     // ~ Now we can delete the message queue.
     if (msgctl(id, IPC_RMID, (struct msqid_ds *) 0) < 0)
@@ -27,11 +35,13 @@ void main(void){
 }
 
 int client(int id){
-    int n;
+    int n, flagExit;
 
     // ~ Read the filename from standard input, write it as a message to the IPC descriptor.
-    if (fgets(mesg.mesg_data, MAXMESGDATA, stdin) == NULL)
+    if (fgets(mesg.mesg_data, MAXMESGDATA, stdin) == NULL) {
         perror("filename read error");
+        return (-1);
+    }
 
     n = strlen(mesg.mesg_data);
 
@@ -50,10 +60,23 @@ int client(int id){
     // ~ receive messages of this type
     mesg.mesg_type = 2;
 
-    while( (n = mesg_recv(id, &mesg)) > 0)
-        if (write(1, mesg.mesg_data, n) != n)
-            perror("data write error");
+    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
 
-    if (n < 0)
+    while( (n = mesg_recv(id, &mesg)) > 0) {
+        if (write(STDOUT_FILENO, mesg.mesg_data, n) != n) {
+            perror("data write error");
+            return (-1);
+        }
+    }
+
+    if (n < 0) {
         perror("data read error");
+        return (-1);
+    }
+
+    // ~ exit client
+    if( flagExit == 0)
+        return (0);
+
+    return (1);
 }

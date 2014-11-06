@@ -38,3 +38,4 @@ server.o: ../server.c ../../msgq.h /usr/include/stdio.h \
  /usr/include/i386-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
  /usr/include/i386-linux-gnu/asm/errno.h /usr/include/asm-generic/errno.h \
  /usr/include/asm-generic/errno-base.h ../../mesg.h
+mesg.o: ../../mesg.c ../../mesg.h
