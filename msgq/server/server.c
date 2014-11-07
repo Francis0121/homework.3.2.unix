@@ -81,7 +81,7 @@ int server(int id){
             } else {
                 // ~ Read the data from the file and send a message to the IPC descriptor.
                 while ((n = read(filefd, sendMesg.mesg_data, MAXMESGDATA)) > 0) {
-                    sendMesg.mesg_len = n;
+                    sendMesg.mesg_len = (n + 4);
                     mesg_send(id, &sendMesg);
                 }
                 close(filefd);
