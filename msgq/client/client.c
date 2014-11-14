@@ -11,6 +11,7 @@ int client(int id);
 void main(void){
 
     int id, flag;
+    pid_t pid;
 
     // ~ Open the single message queue. The server must have already created it.
     if ( (id = msgget(MKEY1, 0)) < 0) {
@@ -18,8 +19,10 @@ void main(void){
         exit(0);
     }
 
+    pid = getpid();
+
     do{
-        printf("input file name > ");
+        printf("input file name pid : %d > ", pid);
     } while( (flag = client(id)) > 0);
 
     if( flag < 0){
@@ -45,7 +48,6 @@ int client(int id){
         perror("filename read error");
         return (-1);
     }
-    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
     n = strlen(mesg.mesg_data);
 
     // ~ ignore the newline from fgets()
@@ -63,6 +65,7 @@ int client(int id){
     // ~ Receive the message from the IPC descriptor and write the data to the standard output.
     // ~ receive messages of this type
     mesg.mesg_type = pid;
+    flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
     while( (n = mesg_recv(id, &mesg)) > 0) {
         if (write(STDOUT_FILENO, mesg.mesg_data, n) != n) {
             perror("data write error");
