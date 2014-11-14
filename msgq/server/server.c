@@ -53,13 +53,15 @@ int server(int id){
     printf("pid : %d, filename : %s\n", pid, rcvMesg.mesg_data);
     flagExit = strcmp(rcvMesg.mesg_data, EXIT_MSG);
 
+    sendMesg.client_pid = pid;
     sendMesg.mesg_type = pid;
+    memset(sendMesg.mesg_data, '\0', MAXMESGDATA);
     if(flagExit != 0) {
         if ((filefd = open(rcvMesg.mesg_data, 0)) < 0) {
             // ~ Error. Format an error message and send it back to the client.
             sprintf(buf, ": can't open, %s\n", rcvMesg.mesg_data);
-            strcat(sendMesg.mesg_data, buf);
-            sendMesg.mesg_len = strlen(sendMesg.mesg_data) + 4;
+            memcpy(sendMesg.mesg_data, buf, strlen(buf));
+            sendMesg.mesg_len = strlen(sendMesg.mesg_data)+4;
             mesg_send(id, &sendMesg);
         } else {
             // ~ Read the data from the file and send a message to the IPC descriptor.

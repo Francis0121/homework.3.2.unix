@@ -67,7 +67,7 @@ int client(int id){
     mesg.mesg_type = pid;
     flagExit = strcmp(mesg.mesg_data, EXIT_MSG);
     while( (n = mesg_recv(id, &mesg)) > 0) {
-        if (write(STDOUT_FILENO, mesg.mesg_data, n) != n) {
+        if (write(STDOUT_FILENO, mesg.mesg_data, n-4) != n-4) {
             perror("data write error");
             return (-1);
         }
